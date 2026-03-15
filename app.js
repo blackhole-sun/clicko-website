@@ -156,6 +156,30 @@ function renderStars(rating) {
 
 function formatPrice(p) { return '₹' + Math.round(p).toLocaleString('en-IN'); }
 
+function getCategoryGradient(category) {
+  const g = {
+    chargers: 'linear-gradient(135deg,#667eea 0%,#764ba2 100%)',
+    earphones: 'linear-gradient(135deg,#f093fb 0%,#f5576c 100%)',
+    cables: 'linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)',
+    cases: 'linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)',
+    powerbanks: 'linear-gradient(135deg,#fa709a 0%,#fee140 100%)',
+    'screen-protectors': 'linear-gradient(135deg,#a18cd1 0%,#fbc2eb 100%)'
+  };
+  return g[category] || g['cases'];
+}
+
+function getCategoryIcon(category) {
+  const icons = {
+    chargers: `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="24" width="36" height="26" rx="6" fill="rgba(255,255,255,.3)" stroke="white" stroke-width="2.5"/><rect x="30" y="14" width="5" height="10" rx="2.5" fill="white"/><rect x="45" y="14" width="5" height="10" rx="2.5" fill="white"/><path d="M36 35 L33 42 H39 L36 49" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M32 50 L32 60 Q32 64 36 64 L44 64 Q48 64 48 60 L48 50" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+    earphones: `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 46 C20 30 28 20 40 20 C52 20 60 30 60 46" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="12" y="44" width="14" height="18" rx="7" fill="rgba(255,255,255,.35)" stroke="white" stroke-width="2.5"/><rect x="54" y="44" width="14" height="18" rx="7" fill="rgba(255,255,255,.35)" stroke="white" stroke-width="2.5"/><circle cx="19" cy="53" r="4" fill="white"/><circle cx="61" cy="53" r="4" fill="white"/></svg>`,
+    cables: `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="33" width="14" height="14" rx="4" fill="rgba(255,255,255,.4)" stroke="white" stroke-width="2"/><rect x="58" y="33" width="14" height="14" rx="4" fill="rgba(255,255,255,.4)" stroke="white" stroke-width="2"/><path d="M22 40 C28 28 32 52 40 40 C48 28 52 52 58 40" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>`,
+    cases: `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="10" width="36" height="60" rx="8" fill="rgba(255,255,255,.2)" stroke="white" stroke-width="2.5"/><rect x="27" y="17" width="26" height="36" rx="3" fill="rgba(255,255,255,.25)" stroke="rgba(255,255,255,.5)" stroke-width="1"/><circle cx="40" cy="62" r="4" fill="rgba(255,255,255,.6)" stroke="white" stroke-width="1.5"/><rect x="31" y="12" width="18" height="4" rx="2" fill="rgba(255,255,255,.6)"/><rect x="18" y="28" width="4" height="10" rx="2" fill="rgba(255,255,255,.4)"/></svg>`,
+    powerbanks: `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="22" width="52" height="36" rx="7" fill="rgba(255,255,255,.2)" stroke="white" stroke-width="2.5"/><rect x="62" y="32" width="8" height="16" rx="4" fill="rgba(255,255,255,.5)"/><rect x="16" y="28" width="12" height="24" rx="4" fill="rgba(255,255,255,.5)"/><rect x="31" y="28" width="12" height="24" rx="4" fill="rgba(255,255,255,.4)"/><rect x="46" y="28" width="10" height="24" rx="4" fill="rgba(255,255,255,.2)"/></svg>`,
+    'screen-protectors': `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="10" width="40" height="60" rx="7" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="2.5"/><rect x="25" y="18" width="30" height="44" rx="4" fill="rgba(255,255,255,.25)" stroke="rgba(255,255,255,.8)" stroke-width="1.5"/><rect x="30" y="13" width="20" height="4" rx="2" fill="rgba(255,255,255,.5)"/><path d="M29 26 L36 26" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round"/><path d="M29 34 L51 34" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/><path d="M29 41 L51 41" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/><path d="M29 48 L44 48" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/></svg>`
+  };
+  return icons[category] || icons['cases'];
+}
+
 function getDiscountPercent(current, original) {
   if (!original) return null;
   return Math.round((1 - current / original) * 100);
@@ -216,8 +240,8 @@ function createProductCard(product, compact = false) {
 
   return `
     <div class="product-card" data-id="${product.id}">
-      <div class="product-card-image" onclick="openModal(${product.id})">
-        <span>${product.emoji}</span>
+      <div class="product-card-image" onclick="openModal(${product.id})" style="background:${getCategoryGradient(product.category)}">
+        <div class="product-svg-icon">${getCategoryIcon(product.category)}</div>
         <button class="quick-view-btn">Quick View</button>
         <div class="product-badges">
           ${badge ? `<span class="product-badge ${badgeClass}">${badge}</span>` : ''}
@@ -457,7 +481,7 @@ function openModal(id) {
 
   document.getElementById('modal-content').innerHTML = `
     <div class="modal-body">
-      <div class="modal-image">${p.emoji}</div>
+      <div class="modal-image" style="background:${getCategoryGradient(p.category)}"><div class="modal-product-icon">${getCategoryIcon(p.category)}</div></div>
       <div class="modal-info">
         <span class="modal-badge">${p.category.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</span>
         <h2>${p.name}</h2>
@@ -571,7 +595,7 @@ function renderCartItems() {
   const el = document.getElementById('cart-items');
   if (!cart.length) {
     el.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><h3>Your cart is empty</h3><p>Add some products to get started!</p></div>`;
-    document.getElementById('cart-total').textContent = '$0.00';
+    document.getElementById('cart-total').textContent = '₹0';
     return;
   }
 
@@ -583,7 +607,7 @@ function renderCartItems() {
     total += subtotal;
     return `
       <div class="cart-item">
-        <div class="cart-item-icon">${p.emoji}</div>
+        <div class="cart-item-icon" style="background:${getCategoryGradient(p.category)}"><div class="cart-item-product-icon">${getCategoryIcon(p.category)}</div></div>
         <div class="cart-item-info">
           <h4>${p.name}</h4>
           <span class="cart-item-price">${formatPrice(p.price)}</span>
